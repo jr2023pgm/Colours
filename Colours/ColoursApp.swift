@@ -11,7 +11,7 @@ import SwiftUI
 struct ColoursApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(redSlider: 0.0, greenSlider: 0.0, blueSlider: 0.0)
         }
     }
 }

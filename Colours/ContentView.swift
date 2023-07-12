@@ -16,17 +16,47 @@ struct ContentView: View {
     @State var greenActual = randomiser()
     @State var blueActual = randomiser()
     
+    @State var redSlider: Double
+    @State var greenSlider: Double
+    @State var blueSlider: Double
+    
     var body: some View {
         VStack (spacing: 20) {
-            Text("Match this Colour").font(.largeTitle).bold()
+            Text("Match this Colour")
+                .font(.largeTitle)
+                .bold()
             HStack {
-                Circle().padding()
-                Circle().padding()
+                Circle()
+                    .fill(Color(red: redActual, green: greenActual, blue: blueActual))
+                    .padding()
+                Circle()
+                    .padding()
             }
+            
+            Sliders(value: $redSlider, color: .red, textColor: "Red")
+            Sliders(value: $greenSlider, color: .green, textColor: "Green")
+            Sliders(value: $blueSlider, color: .blue, textColor: "Blue")
+            
         }
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(redSlider: 0.0, greenSlider: 0.0, blueSlider: 0.0)
+}
+
+struct Sliders: View {
+    @Binding var value: Double
+    var color: Color
+    var textColor: String
+    
+    var body: some View {
+        VStack {
+            Text("\(textColor) (\(Int(value*256)))")
+                .font(.largeTitle)
+            Slider(value: $value)
+                .accentColor(color)
+                .padding()
+        }
+    }
 }
