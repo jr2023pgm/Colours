@@ -20,6 +20,40 @@ struct ContentView: View {
     @State var greenSlider: Double
     @State var blueSlider: Double
     
+    @State var showAlert = false
+    
+    func reset() {
+        redActual = ContentView.randomiser()
+        greenActual = ContentView.randomiser()
+        blueActual = ContentView.randomiser()
+        
+        redSlider = 0.0
+        blueSlider = 0.0
+        greenSlider = 0.0
+        
+    }
+    
+    func stars() -> String {
+        let difference = Int(abs((redActual*255) * (greenActual * 255) * (blueActual * 255) - (redSlider*255) * (greenSlider * 255) * (blueSlider * 255)))
+        
+        if (difference < 1048576) {
+            return "⭐️⭐️⭐️⭐️"
+        }
+        else if  (difference<8388608) {
+            return "⭐️⭐️⭐️"
+        }
+        else if (difference<12582912) {
+            return "⭐️⭐️"
+        }
+        else if (difference<16777216){
+            return "⭐️"
+        }
+        else {
+            return "Not even close!"
+        }
+        
+    }
+    
     var body: some View {
         VStack (spacing: 20) {
             Text("Match this Colour")
@@ -30,12 +64,32 @@ struct ContentView: View {
                     .fill(Color(red: redActual, green: greenActual, blue: blueActual))
                     .padding()
                 Circle()
+                    .fill(Color(red: redSlider, green: greenSlider, blue: blueSlider))
                     .padding()
             }
             
             Sliders(value: $redSlider, color: .red, textColor: "Red")
             Sliders(value: $greenSlider, color: .green, textColor: "Green")
             Sliders(value: $blueSlider, color: .blue, textColor: "Blue")
+            
+            Button(action: {self.showAlert = true}) {
+                Text("Submit")
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Your performance"), message: Text(stars()))
+            }
+            .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
+            .background(Color(red: redActual, green: greenActual, blue: blueActual))
+            .cornerRadius(.infinity)
+            .foregroundColor(.white)
+            
+            Button(action: {reset()}) {
+                Text("Reset")
+            }
+            .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
+            .background(Color(red: redSlider, green: greenSlider, blue: blueSlider))
+            .cornerRadius(.infinity)
+            .foregroundColor(.white)
             
         }
     }
@@ -52,7 +106,7 @@ struct Sliders: View {
     
     var body: some View {
         VStack {
-            Text("\(textColor) (\(Int(value*256)))")
+            Text("\(textColor) (\(Int(value*255)))")
                 .font(.largeTitle)
             Slider(value: $value)
                 .accentColor(color)
